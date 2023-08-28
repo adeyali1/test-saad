@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+   .report-header-1 {
+      @apply text-xl;
+   }
+
+   .report-header-2 {
+      @apply text-2xl;
+   }
+
+   .report-header-3 {
+      @apply text-3xl;
+   }
+
+   .report-header-4 {
+      @apply text-4xl;
+   }
+
+   .report-header-5 {
+      @apply text-5xl;
+   }
+}

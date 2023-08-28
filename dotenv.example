@@ -1,0 +1,5 @@
+NEXTAUTH_SECRET=L0J01Fkc3YChZRGq9fnD3EGEQG0LSKRCBClCqNW61hI=
+NEXTAUTH_URL=http://localhost:3000
+VERCEL_URL=https://localhost:3000
+MONGODB_CONNECTION_STRING=mongodb+srv://ebos:YKzMX3jTIIUqtNop@cluster0.ltwumqz.mongodb.net/Ebos
+
