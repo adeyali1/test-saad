@@ -43,7 +43,7 @@ const DisruptionContent = ({
 		if (data) {
 			dispatchVideos(data);
 		}
-	}, [data]);
+	}, [data, dispatchVideos]);
 
 	const emptyScaleTakeaways = {
 		type: takeawayTypeEnums.scale,

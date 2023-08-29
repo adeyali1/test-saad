@@ -43,7 +43,7 @@ const Product: NextPage<Props> = ({ product, index, onRemove }) => {
 			level: 2,
 			sales: 50,
 		} as IFuture;
-	}, []);
+	}, [product.futures]);
 
 	return (
 		<>

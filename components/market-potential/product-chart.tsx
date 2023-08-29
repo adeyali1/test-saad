@@ -18,6 +18,7 @@ const MarketPotentialProductChart = ({ product, customOptions }: Props) => {
 		options: [],
 		data: [],
 	});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const updateChartProps = () => {
 		const rows =
 			product.competitors?.map((comp) => [comp.name, comp.marketShare]) ??
@@ -55,7 +56,7 @@ const MarketPotentialProductChart = ({ product, customOptions }: Props) => {
 
 	useEffect(() => {
 		updateChartProps();
-	}, [product]);
+	}, [product, updateChartProps]);
 
 	return (
 		<div className='shadow h-full'>

@@ -39,7 +39,7 @@ const SharedVideoForm = ({
 				[videoPropName]: objectPath.get(data, videoPropName) ?? "",
 			} as any);
 		}
-	}, [data]);
+	}, [data, videoPropName]);
 
 	const queryClient = useQueryClient();
 

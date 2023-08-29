@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-  "lint": "next lint"
+    "lint": "next lint"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.14.0",
@@ -21,6 +21,7 @@
     "dotenv": "^16.0.3",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
+    "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "jsonwebtoken": "^9.0.1",
     "jspdf": "^2.5.1",
@@ -36,6 +37,8 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/file-saver": "^2.0.5",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/lodash": "^4.14.194",
     "@types/node": "18.15.2",
     "@types/object-path": "^0.11.1",

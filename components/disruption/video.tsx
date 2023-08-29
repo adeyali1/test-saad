@@ -26,7 +26,7 @@ const Video: NextPage<Props> = ({ videoPropName }) => {
 				[videoPropName]: objectPath.get(data, videoPropName),
 			} as any);
 		}
-	}, [data]);
+	}, [data, videoPropName]);
 
 	if (isLoading) {
 		return (

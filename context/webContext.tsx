@@ -3,6 +3,7 @@ import React from "react";
 import { createContext, useContext, ReactNode } from "react";
 
 interface User {
+  role: string;
   // Define your user properties here
   id: string;
   username: string;

@@ -14,6 +14,7 @@ const RoadmapChart = ({ userIdeas }: Props) => {
 		options: {},
 		data: [],
 	});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const updateChartProps = () => {
 		const rows =
 			userIdeas.ideas?.map((idea) => {
@@ -40,7 +41,7 @@ const RoadmapChart = ({ userIdeas }: Props) => {
 		if (userIdeas.ideas?.length) {
 			updateChartProps();
 		}
-	}, [userIdeas]);
+	}, [updateChartProps, userIdeas]);
 
 	return (
 		<div className='h-full'>

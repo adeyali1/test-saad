@@ -1,5 +1,4 @@
 import { IUser } from '../../../models/user';
-
 import * as authService from "../../../services/auth.service";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -45,7 +44,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     var result = await authService.createUser(user);
-
+    
     res.status(201).json(result);
 
   } catch (error) {

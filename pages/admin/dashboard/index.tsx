@@ -1,9 +1,8 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState, ChangeEvent } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { MenuIcon, BellIcon, XCircleIcon } from "@heroicons/react/outline";
-// pages/dashboard.tsx
 import { GetServerSideProps } from "next";
-
+import { saveAs } from "file-saver";
 interface NavigationItem {
   name: string;
   href: string;
@@ -11,41 +10,45 @@ interface NavigationItem {
 }
 
 const navigation: NavigationItem[] = [
-  { name: "Home", href: "#", current: true },
+  { name: "Home", href: "/", current: true },
   { name: "Team", href: "#", current: false },
   { name: "Projects", href: "#", current: false },
   { name: "Calendar", href: "#", current: false },
   { name: "Reports", href: "#", current: false },
 ];
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { dbConnect } from "../../../services/db.service";
 import { User } from "../../../models/user";
 import { useUser } from "../../../context/webContext";
+import ActionsNavbar from "../../../components/common/actions-navbar";
+import { useRouter } from "next/router";
+import { eq } from "lodash";
 
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
-  { name: "Sign out", href: null },
+  { name: "Sign out", href: "#" },
 ];
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 interface Props {
-  users: any[]; // Adjust this type as per your User model
+  allusers: any[]; // Adjust this type as per your User model
 }
 
-const Home: React.FC<Props> = ({ users }) => {
+const Home: React.FC<Props> = ({ allusers }) => {
   const { user, setUser } = useUser();
+  const [users, setUsers] = useState(allusers);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getUser = async () => {
+    const token = localStorage.getItem("auth-token");
     const res = await fetch("/api/user/me", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-
-      body: JSON.stringify({}),
+      body: JSON.stringify({ token }),
     });
     const data = await res.json();
     setUser(data.user);
@@ -72,9 +75,41 @@ const Home: React.FC<Props> = ({ users }) => {
     const data = await res.json();
     location.reload();
   };
+  const [query, setQuery] = useState("");
+  const filterData = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e?.target?.value);
+    if (e.target.value === "") {
+      setUsers(allusers);
+    } else {
+      let filUsers = allusers.filter(
+        (user) =>
+          user.fullName.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          user.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          user.phoneNumber.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setUsers(filUsers);
+  }
+  };
+  const handleExport = () => {
+    const csvData = users.map((user) =>
+      [user.id, user.fullName, user.email, user.phoneNumber].join(",")
+    );
+
+    const csvContent = [["ID", "Name", "Email", "Contact"], ...csvData].join(
+      "\n"
+    );
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+    saveAs(blob, "users.csv");
+  };
+  const { data: session } = useSession();
+  const router = useRouter();
   useEffect(() => {
     getUser();
-  }, [getUser]);
+    if (!localStorage.getItem("auth-token") || user?.role !== "admin")
+      router.push("/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       {/*
@@ -231,10 +266,10 @@ const Home: React.FC<Props> = ({ users }) => {
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-white">
-                        {user?.fullName}
+                        {/* {user?.fullName} */}
                       </div>
                       <div className="text-base font-medium leading-none text-gray-400">
-                        {user?.email}
+                        {/* {user?.email} */}
                       </div>
                     </div>
                     <button
@@ -251,7 +286,7 @@ const Home: React.FC<Props> = ({ users }) => {
                       <Disclosure.Button
                         key={item.name}
                         as="a"
-                        href={item.href}
+                        href={item?.href}
                         className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                       >
                         {item.name}
@@ -265,29 +300,31 @@ const Home: React.FC<Props> = ({ users }) => {
         </Disclosure>
 
         <main>
-          <div className="mx-auto w-full xl:w-4/5 py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full overscroll-y-scroll xl:w-4/5 py-6 sm:px-6 lg:px-8">
             <div className="w-full bg-white rounded-lg shadow-xl p-4">
               <input
                 type="text"
                 name="query"
                 id="query"
+                onChange={filterData}
+                value={query}
                 className="block my-4 w-full rounded-md border-2 py-1.5 pl-4 pr-20 text-gray-900 outline-none border-gray-300 placeholder:text-gray-400 focus:border-[#138bc4]  sm:text-base sm:leading-6"
                 placeholder="Search By Name"
               />
               <h2 className="text-2xl font-semibold mb-4">User List</h2>
-              <table className="w-full border-collapse border border-gray-300">
+              <table className="w-full border-collapse  border border-gray-300">
                 <thead>
                   <tr>
                     <th className="px-6 py-3 bg-gray-100 text-left text-base leading-4 font-semibold text-gray-700 uppercase tracking-wider">
                       Full Name
                     </th>
-                    <th className="px-6 py-3 bg-gray-100 text-left text-base leading-4 font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-3 hidden md:table-cell bg-gray-100 text-left text-base leading-4 font-semibold text-gray-700 uppercase tracking-wider">
                       Email
                     </th>
                     <th className="px-6 py-3 bg-gray-100 text-left text-base leading-4 font-semibold text-gray-700 uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 bg-gray-100 text-left text-base leading-4 font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-3 hidden md:table-cell bg-gray-100 text-left text-base leading-4 font-semibold text-gray-700 uppercase tracking-wider">
                       Registered
                     </th>
                     <th className="px-6 py-3 bg-gray-100 text-left text-base leading-4 font-semibold text-gray-700 uppercase tracking-wider">
@@ -303,13 +340,13 @@ const Home: React.FC<Props> = ({ users }) => {
                           <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
                             {user.fullName}
                           </td>
-                          <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
+                          <td className="px-6 py-4 hidden md:table-cell whitespace-no-wrap border-b border-gray-300">
                             {user.email}
                           </td>
                           <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
                             {user.phoneNumber}
                           </td>
-                          <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
+                          <td className="px-6 py-4 hidden md:table-cell whitespace-no-wrap border-b border-gray-300">
                             {user.createdAt.slice(0, 10)}
                           </td>
                           <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
@@ -334,6 +371,12 @@ const Home: React.FC<Props> = ({ users }) => {
                   })}
                 </tbody>
               </table>
+              <button
+                onClick={handleExport}
+                className="font-bold tracking-wider mt-4 bg-black text-white px-4 py-2 text-base rounded-lg"
+              >
+                Export Csv
+              </button>
             </div>
           </div>
         </main>
@@ -347,14 +390,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
     const users = await User.find({}).exec();
     return {
       props: {
-        users: JSON.parse(JSON.stringify(users)),
+        allusers: JSON.parse(JSON.stringify(users)),
       },
     };
   } catch (error) {
     console.error("Error fetching users:", error);
     return {
       props: {
-        users: [],
+        allusers: [],
       },
     };
   }

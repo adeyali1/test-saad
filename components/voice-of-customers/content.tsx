@@ -22,7 +22,7 @@ const VoiceOfCustomersContent = () => {
 			wishlist: ["", "", "", "", ""],
 			fulfill: ["", "", "", "", ""],
 		} as IUserCustomers;
-	}, []);
+	}, [session?.user?.id]);
 
 	const [userCustomers, setUserCustomers] =
 		useState<IUserCustomers>(emptyUserCustomers);

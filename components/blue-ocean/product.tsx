@@ -25,7 +25,7 @@ const BlueOceanProduct = ({ product, index }: Props) => {
 				} as IFactorCompetitor;
 			}),
 		} as IIdeaFactor;
-	}, []);
+	}, [product.competitors]);
 
 	return (
 		<div key={index} className='p-5 bg-dark-50 rounded-2xl'>

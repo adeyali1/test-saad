@@ -31,7 +31,7 @@ const RoadMapContent = ({
 			startMonth: todayDateStr,
 			durationInMonths: 6,
 		} as IIdea;
-	}, []);
+	}, [todayDateStr]);
 
 	const queryClient = useQueryClient();
 

@@ -18,6 +18,7 @@ export const authOptions = {
     async session({ session, token, user, profile }) {
       // Send properties to the client, like an access_token and user id from a provider.
       session.user = token;
+      process?.env?.MONGODB_CONNECTION_STRING 
       console.log("session is called .......");
       return session;
     },

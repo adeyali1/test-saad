@@ -10,7 +10,7 @@ const FormikContextChild = ({ dispatch }: Props) => {
 	const { values: userProduct }: any = useFormikContext();
 	useEffect(() => {
 		dispatch(userProduct);
-	}, [userProduct.products]);
+	}, [dispatch, userProduct, userProduct.products]);
 	return <></>;
 };
 

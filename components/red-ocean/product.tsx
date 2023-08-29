@@ -26,7 +26,7 @@ const RedOceanProduct: NextPage<Props> = ({ product, index }) => {
 				} as IFactorCompetitor;
 			}),
 		} as IFactor;
-	}, []);
+	}, [product.competitors]);
 
 	return (
 		<>

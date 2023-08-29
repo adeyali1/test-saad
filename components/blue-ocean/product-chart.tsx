@@ -18,6 +18,7 @@ const BlueOceanProductChart = ({ product, customOptions }: Props) => {
 		options: {},
 		data: [],
 	});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const updateChartProps = () => {
 		const competitors =
 			product.competitors?.filter((c) => !c.isUntapped) ?? [];
@@ -103,7 +104,7 @@ const BlueOceanProductChart = ({ product, customOptions }: Props) => {
 		if (product.competitors?.length) {
 			updateChartProps();
 		}
-	}, [product]);
+	}, [product, updateChartProps]);
 
 	return (
 		<div className='shadow h-full'>

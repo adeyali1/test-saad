@@ -5,6 +5,8 @@ import { useState } from "react";
 import { object, string } from "yup";
 import Spinner from "../common/spinner";
 import { useUser } from "../../context/webContext";
+import jwt from "jsonwebtoken";
+
 interface Props {
   closeCallback: () => void;
 }
@@ -45,34 +47,36 @@ const Login = ({ closeCallback }: Props) => {
   }
 
   async function trySignIn(email: string, password: string) {
+    const res = await fetch("/api/user/me", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+
+    if (data.user.status === false)
+      return setAuthState((old) => ({
+        ...old,
+        isLoading: false,
+        error: "Invalid Login",
+      }));
+
+    console.log(data.user);
     const result = await signIn("credentials", {
       redirect: false,
       email: email,
       password: password,
     });
-    if (!result?.error) {
-      //login is successful.. close login model
-      //   setUser(result?.data?.user);
-      const res = await fetch("/api/user/me", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
 
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
+    if (!result?.error) {
       setUser(data.user);
-      if (data.user.status === false)
-        return setAuthState((old) => ({
-          ...old,
-          isLoading: false,
-          error: "Invalid Login",
-        }));
-      else {
-        closeCallback();
-        router.push("org/goals");
-      }
+      localStorage.setItem("auth-token", data.token);
+      //login is successful.. close login model
+      closeCallback();
+      router.push("org/goals");
     } else {
       setAuthState((old) => ({
         ...old,

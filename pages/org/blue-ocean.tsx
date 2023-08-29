@@ -39,7 +39,7 @@ const BlueOceanCanvas = () => {
 			userId: session?.user?.id,
 			products: [],
 		} as IUserProduct;
-	}, []);
+	}, [session?.user?.id]);
 
 	const [userProduct, setUserProduct] =
 		useState<IUserProduct>(emptyUserProduct);
@@ -101,7 +101,7 @@ const BlueOceanCanvas = () => {
 			setUserProduct(data);
 		}
 		setUserProduct(data ?? emptyUserProduct);
-	}, [data]);
+	}, [data, emptyFactor, emptyUserProduct]);
 
 	console.log("userProduct", userProduct);
 

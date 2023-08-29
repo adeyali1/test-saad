@@ -25,7 +25,7 @@ const GoalsContent = () => {
 			targetDate: "",
 			goals: [],
 		} as IUserGoals;
-	}, []);
+	}, [session?.user?.id]);
 
 	const [userGoals, setUserGoal] = useState<IUserGoals>(emptyUserGoal);
 
